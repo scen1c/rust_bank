@@ -1,9 +1,0 @@
-/home/scen1c/unic/rustc_projects/rust_bank/target/debug/deps/zmij-1429128ce32627d3.d: /home/scen1c/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.20/src/lib.rs /home/scen1c/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.20/src/stdarch_x86.rs /home/scen1c/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.20/src/traits.rs
-
-/home/scen1c/unic/rustc_projects/rust_bank/target/debug/deps/libzmij-1429128ce32627d3.rlib: /home/scen1c/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.20/src/lib.rs /home/scen1c/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.20/src/stdarch_x86.rs /home/scen1c/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.20/src/traits.rs
-
-/home/scen1c/unic/rustc_projects/rust_bank/target/debug/deps/libzmij-1429128ce32627d3.rmeta: /home/scen1c/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.20/src/lib.rs /home/scen1c/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.20/src/stdarch_x86.rs /home/scen1c/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.20/src/traits.rs
-
-/home/scen1c/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.20/src/lib.rs:
-/home/scen1c/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.20/src/stdarch_x86.rs:
-/home/scen1c/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.20/src/traits.rs:
