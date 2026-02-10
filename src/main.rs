@@ -1,0 +1,8 @@
+struct BankAccountRust {
+
+}
+
+
+fn main() {
+
+}
