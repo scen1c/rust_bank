@@ -1,6 +1,7 @@
 use std::io::{self, Write};
-
-#[derive(Debug)]
+use serde::{Deserialize, Serialize};
+use std::fs;
+#[derive(Debug, Serialize, Deserialize, Clone)]
 struct BankAccountRust {
     name: String,
     account_id: u32,
@@ -12,6 +13,8 @@ struct BankAccountRust {
 
 
 fn main() {
+    let mut json_string: Option<String> = None;
+
     println!("Hello user this is test bank! Please login into the account!");
     print!("Do u have account? (y/n): ");
     io::stdout().flush().unwrap();
@@ -22,7 +25,14 @@ fn main() {
 
     if answer.trim() == "n" {
         let new_account = creating_user();
+        println!("Ur account succesfully created!");
+        let json_string = serde_json::to_string_pretty(&new_account);
+        match serde_json::to_string_pretty(&new_account) {
+            Ok(json) => println!("{json}"),
+            Err(e) => eprintln!("JSON error: {e}"),
+        }
     };
+    println!("{:#?}", json_string)
 }
 fn creating_user() -> BankAccountRust {
     let mut name = String::new();
@@ -32,11 +42,11 @@ fn creating_user() -> BankAccountRust {
     print!("Lets create ur account. Whats ur name?: ");
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut name).expect("Error");
-    name.trim();
+    let name = name.trim().to_string();
     print!("Whats ur email?: ");
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut email).expect("Error");
-    email.trim();
+    let email = email.trim().to_string();
     print!("Whats ur phone number?: ");
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut phone_string).expect("Error");
@@ -44,7 +54,7 @@ fn creating_user() -> BankAccountRust {
     print!("Lets write ur password! Create password: ");
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut password).expect("Error");
-    
+    let password = password.trim().to_string();
     BankAccountRust { 
         name, 
         account_id: 1, 
