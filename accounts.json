@@ -6,5 +6,13 @@
     "email": "Pavel@gmail.com",
     "phone": 1111111,
     "password": "1111111"
+  },
+  {
+    "name": "Peter",
+    "account_id": 1,
+    "balance": 0,
+    "email": "Peter@gmail.com",
+    "phone": 33333,
+    "password": "333333"
   }
 ]

@@ -26,8 +26,9 @@ fn main() {
     if answer.trim() == "n" {
         let new_account = creating_user();
         println!("Ur account succesfully created!");
-        let accounts = vec![new_account]; 
-        match save_account(&accounts, "account.json") {
+        let mut accounts = load_account("accounts.json").unwrap_or_else(|_| Vec::new());
+        accounts.push(new_account);
+        match save_account(&accounts, "accounts.json") {
         Ok(_) => println!("Saved to account.json"),
         Err(e) => eprintln!("Save error: {e}"),
     }
@@ -70,4 +71,10 @@ fn save_account(account: &Vec<BankAccountRust>, path: &str) -> io::Result<()> {
     let json = serde_json::to_string_pretty(account).unwrap();
     fs::write(path, json)?;
     Ok(())
+}
+
+fn load_account(path: &str) -> std::io::Result<Vec<BankAccountRust>> {
+    let file_content = fs::read_to_string(path);
+    let accounts: Vec<BankAccountRust> = serde_json::from_str(&file_content.unwrap())?;
+    Ok(accounts)
 }
