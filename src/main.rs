@@ -26,13 +26,14 @@ fn main() {
     if answer.trim() == "n" {
         let new_account = creating_user();
         println!("Ur account succesfully created!");
-        let json_string = serde_json::to_string_pretty(&new_account);
-        match serde_json::to_string_pretty(&new_account) {
-            Ok(json) => println!("{json}"),
-            Err(e) => eprintln!("JSON error: {e}"),
-        }
+        let accounts = vec![new_account]; 
+        match save_account(&accounts, "account.json") {
+        Ok(_) => println!("Saved to account.json"),
+        Err(e) => eprintln!("Save error: {e}"),
+    }
+
     };
-    println!("{:#?}", json_string)
+    
 }
 fn creating_user() -> BankAccountRust {
     let mut name = String::new();
@@ -65,3 +66,8 @@ fn creating_user() -> BankAccountRust {
     }
 }
 
+fn save_account(account: &Vec<BankAccountRust>, path: &str) -> io::Result<()> {
+    let json = serde_json::to_string_pretty(account).unwrap();
+    fs::write(path, json)?;
+    Ok(())
+}
