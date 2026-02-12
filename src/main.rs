@@ -13,28 +13,44 @@ struct BankAccountRust {
 
 
 fn main() {
-    let mut json_string: Option<String> = None;
-
     println!("Hello user this is test bank! Please login into the account!");
     print!("Do u have account? (y/n): ");
     io::stdout().flush().unwrap();
-    let mut answer = String::new();
-    io::stdin()
-    .read_line(&mut answer)
-    .expect("Please enter y or n");
 
-    if answer.trim() == "n" {
+    let mut answer = String::new();
+    io::stdin().read_line(&mut answer).unwrap();
+    let answer = answer.trim();
+
+    if answer == "n" {
         let new_account = creating_user();
         println!("Ur account succesfully created!");
+
         let mut accounts = load_account("accounts.json").unwrap_or_else(|_| Vec::new());
         accounts.push(new_account);
-        match save_account(&accounts, "accounts.json") {
-        Ok(_) => println!("Saved to account.json"),
-        Err(e) => eprintln!("Save error: {e}"),
-    }
 
-    };
-    
+        match save_account(&accounts, "accounts.json") {
+            Ok(_) => println!("Saved to accounts.json"),
+            Err(e) => eprintln!("Save error: {e}"),
+        }
+    } else if answer == "y" {
+        let accounts = load_account("accounts.json").unwrap_or_else(|_| Vec::new());
+
+        print!("Please write ur name: ");
+        io::stdout().flush().unwrap();
+
+        let mut account_name = String::new();
+        io::stdin().read_line(&mut account_name).unwrap();
+        let account_name = account_name.trim();
+
+        let found_account = accounts.iter().find(|acc| acc.name == account_name);
+
+        match found_account {
+            Some(account) => println!("Found: {:?}, balance={}", account.name, account.balance),
+            None => println!("Account not found!"),
+        }
+    } else {
+        println!("Please enter only 'y' or 'n'");
+    }
 }
 fn creating_user() -> BankAccountRust {
     let mut name = String::new();

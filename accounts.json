@@ -2,7 +2,7 @@
   {
     "name": "Pavel",
     "account_id": 1,
-    "balance": 0,
+    "balance": 100,
     "email": "Pavel@gmail.com",
     "phone": 1111111,
     "password": "1111111"
