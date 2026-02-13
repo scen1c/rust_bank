@@ -1,6 +1,22 @@
 use std::fs;
 use std::io::{self, Write};
-use crate::BankAccountRust;
+
+
+
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct BankAccountRust {
+    pub name: String,
+    pub account_id: u32,
+    pub balance: i32,
+    pub email: String,
+    pub phone: u32,
+    pub password: String,
+}
+
+
+
 
 pub fn save_account(accounts: &Vec<BankAccountRust>, path: &str) -> io::Result<()> {
     let json = serde_json::to_string_pretty(accounts).unwrap();
@@ -14,7 +30,7 @@ pub fn load_account(path: &str) -> io::Result<Vec<BankAccountRust>> {
     Ok(accounts)
 }
 
-pub fn creating_user() -> BankAccountRust {
+pub fn creating_user(account_id: u32) -> BankAccountRust {
     let mut name = String::new();
     let mut email = String::new();
     let mut phone_string = String::new();
@@ -37,7 +53,7 @@ pub fn creating_user() -> BankAccountRust {
     let password = password.trim().to_string();
     BankAccountRust { 
         name, 
-        account_id: 1, 
+        account_id, 
         balance: 0, 
         email, 
         phone, 
@@ -48,15 +64,14 @@ pub fn creating_user() -> BankAccountRust {
 
 pub fn information(user: &BankAccountRust) -> () {
     let mut option = String::new();
-    println!("Which type of info u need to know?\n
-    1.Name of Account\n
-    2.Account ID\n
-    3.Balance\n
-    4.Email\n
-    5.Phone Number\n
-    6.Password\n
-    
-    ");
+    println!("Which type of info u need to know?
+    1.Name of Account
+    2.Account ID
+    3.Balance
+    4.Email
+    5.Phone Number
+    6.Password"
+    );
     print!("Choose from 1 to 6: ");
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut option).unwrap();
@@ -68,7 +83,6 @@ pub fn information(user: &BankAccountRust) -> () {
         4 => println!("Email of account is: {}", user.email),
         5 => println!("Phone number is: {}", user.phone),
         6 => println!("Password of account is: {}", user.password),
-
         _ => println!("You have chosen wrong number, try again!"),
     }
 
