@@ -45,3 +45,31 @@ pub fn creating_user() -> BankAccountRust {
     }
 }
 
+
+pub fn information(user: &BankAccountRust) -> () {
+    let mut option = String::new();
+    println!("Which type of info u need to know?\n
+    1.Name of Account\n
+    2.Account ID\n
+    3.Balance\n
+    4.Email\n
+    5.Phone Number\n
+    6.Password\n
+    
+    ");
+    print!("Choose from 1 to 6: ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut option).unwrap();
+    let option = option.trim().parse().expect("Error it has to be numeral from 1 to 6");
+    match option {
+        1 => println!("Name account is: {}", user.name),
+        2 => println!("Account ID is: {}", user.account_id),
+        3 => println!("Balance of account is: {}", user.balance),
+        4 => println!("Email of account is: {}", user.email),
+        5 => println!("Phone number is: {}", user.phone),
+        6 => println!("Password of account is: {}", user.password),
+
+        _ => println!("You have chosen wrong number, try again!"),
+    }
+
+}

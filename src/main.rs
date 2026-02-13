@@ -48,9 +48,24 @@ fn main() {
         let found_account = accounts.iter().find(|acc| acc.name == account_name);
 
         match found_account {
-            Some(account) => println!("Found: {:?}, balance={}", account.name, account.balance),
+            Some(account) => {
+                print!("Account {} found. Please Write ur password: ", account.name);
+                io::stdout().flush().unwrap();
+                let mut account_password = String::new();
+                io::stdin().read_line(&mut account_password).unwrap();
+                let account_password = account_password.trim().to_string();
+                if account_password == account.password {
+                    io::stdout().flush().unwrap();
+                    println!("Welcome back, {}!", account.name);
+                    account_utils::information(&account);
+                } else {
+                    println!("Wrong password!");
+                }
+                
+            },  
             None => println!("Account not found!"),
         }
+        ;
     } else {
         println!("Please enter only 'y' or 'n'");
     }
