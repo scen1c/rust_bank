@@ -1,6 +1,4 @@
 use std::io::{self, Write};
-use serde::{Deserialize, Serialize};
-use std::fs;
 
 mod account_utils;
 
@@ -18,7 +16,7 @@ fn main() {
         println!("Ur account succesfully created!");
 
         let mut accounts = account_utils::load_account("accounts.json").unwrap_or_else(|_| Vec::new());
-        let next_id = accounts.iter().map(|a| a.account_id + 1).max().unwrap_or(0) + 1;
+        let next_id = accounts.iter().map(|a| a.account_id).max().unwrap_or(0) + 1;
         let new_account = account_utils::creating_user(next_id);
         println!("Ur account succesfully created!");
         accounts.push(new_account);
@@ -49,7 +47,12 @@ fn main() {
                 if account_password == account.password {
                     io::stdout().flush().unwrap();
                     println!("Welcome back, {}!", account.name);
-                    account_utils::information(&account);
+                    if account.is_admin {
+                        account_utils::admin_information(&account);
+                    }
+                    else {
+                        account_utils::information(&account);
+                    }
                 } else {
                     println!("Wrong password!");
                 }
