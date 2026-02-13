@@ -1,6 +1,6 @@
 use std::io::{self, Write};
-
 mod account_utils;
+use crate::account_utils as acut;
 
 
 fn main() {
@@ -13,20 +13,18 @@ fn main() {
     let answer = answer.trim();
 
     if answer == "n" {
-        println!("Ur account succesfully created!");
-
-        let mut accounts = account_utils::load_account("accounts.json").unwrap_or_else(|_| Vec::new());
+        let mut accounts = acut::load_account("accounts.json").unwrap_or_else(|_| Vec::new());
         let next_id = accounts.iter().map(|a| a.account_id).max().unwrap_or(0) + 1;
-        let new_account = account_utils::creating_user(next_id);
+        let new_account = acut::creating_user(next_id);
         println!("Ur account succesfully created!");
         accounts.push(new_account);
 
-        match account_utils::save_account(&accounts, "accounts.json") {
+        match acut::save_account(&accounts, "accounts.json") {
             Ok(_) => println!("Saved to accounts.json"),
             Err(e) => eprintln!("Save error: {e}"),
         }
     } else if answer == "y" {
-        let accounts = account_utils::load_account("accounts.json").expect("Smth wrong!");
+        let accounts = acut::load_account("accounts.json").expect("Smth wrong!");
 
         print!("Please write ur name: ");
         io::stdout().flush().unwrap();
@@ -48,10 +46,11 @@ fn main() {
                     io::stdout().flush().unwrap();
                     println!("Welcome back, {}!", account.name);
                     if account.is_admin {
-                        account_utils::admin_information(&account);
+                        let mut admin = account.clone(); 
+                        acut::admin_information(&mut admin);
                     }
                     else {
-                        account_utils::information(&account);
+                        acut::information(&account);
                     }
                 } else {
                     println!("Wrong password!");

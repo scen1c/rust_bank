@@ -1,5 +1,5 @@
 use std::fs;
-use std::io::{self, Read, Write};
+use std::io::{self, Write};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -83,7 +83,7 @@ pub fn information(user: &BankAccountRust) -> () {
 
 }
 
-pub fn admin_information(user: &BankAccountRust) -> () {
+pub fn admin_information(admin: &mut BankAccountRust) -> () {
     let mut option1 = String::new();
     println!("Which type of info u need to know?
     1.Name of Account
@@ -99,16 +99,15 @@ pub fn admin_information(user: &BankAccountRust) -> () {
     io::stdin().read_line(&mut option1).unwrap();
     let option1 = option1.trim().parse().expect("Error it has to be numeral from 1 to 6");
     match option1 {
-        1 => println!("Name account is: {}", user.name),
-        2 => println!("Account ID is: {}", user.account_id),
-        3 => if user.is_admin {
-                println!("Balance of account is: Unlimited");
-            } else {
-            println!("Balance of account is: {}", user.balance);
-            },
-        4 => println!("Email of account is: {}", user.email),
-        5 => println!("Phone number is: {}", user.phone),
-        6 => println!("Password of account is: {}", user.password),
+        1 => println!("Name account is: {}", admin.name),
+        2 => println!("Account ID is: {}", admin.account_id),
+        3 => {
+            let act_balance = balance_of_admin(admin);
+            println!("Balance of account is: {}", act_balance)
+        },
+        4 => println!("Email of account is: {}", admin.email),
+        5 => println!("Phone number is: {}", admin.phone),
+        6 => println!("Password of account is: {}", admin.password),
         7 => {
             let mut option2 = String::new();
             println!("What do u want?
@@ -146,8 +145,12 @@ pub fn admin_information(user: &BankAccountRust) -> () {
 }
 
 
-pub fn balance_of_admin(admin: &mut BankAccountRust) {
+pub fn balance_of_admin(admin: &mut BankAccountRust) -> i128 {
     if admin.is_admin || admin.balance == i128::MIN {
         admin.balance = i128::MAX;
         }
+    else {
+        println!("Error")
+    }
+    admin.balance
     }
