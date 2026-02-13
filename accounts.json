@@ -3,6 +3,7 @@
     "name": "Pavel",
     "account_id": 1,
     "balance": 100,
+    "is_admin": false,
     "email": "Pavel@gmail.com",
     "phone": 1111111,
     "password": "1111111"
@@ -11,6 +12,7 @@
     "name": "Peter",
     "account_id": 2,
     "balance": 0,
+    "is_admin": false,
     "email": "Peter@gmail.com",
     "phone": 33333,
     "password": "333333"
@@ -19,6 +21,7 @@
     "name": "Admin",
     "account_id": 0,
     "balance": 0,
+    "is_admin": true,
     "email": "Admin",
     "phone": 33333,
     "password": "admin"
@@ -27,6 +30,7 @@
     "name": "Jane",
     "account_id": 4,
     "balance": 0,
+    "is_admin": false,
     "email": "Jane@gmail.com",
     "phone": 999999,
     "password": "9999"

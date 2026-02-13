@@ -1,22 +1,17 @@
 use std::fs;
 use std::io::{self, Write};
-
-
-
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BankAccountRust {
     pub name: String,
     pub account_id: u32,
-    pub balance: i32,
+    pub balance: i128,
+    pub is_admin: bool,
     pub email: String,
     pub phone: u32,
     pub password: String,
 }
-
-
-
 
 pub fn save_account(accounts: &Vec<BankAccountRust>, path: &str) -> io::Result<()> {
     let json = serde_json::to_string_pretty(accounts).unwrap();
@@ -54,13 +49,13 @@ pub fn creating_user(account_id: u32) -> BankAccountRust {
     BankAccountRust { 
         name, 
         account_id, 
-        balance: 0, 
+        balance: 0,
+        is_admin: false, 
         email, 
         phone, 
         password,
     }
 }
-
 
 pub fn information(user: &BankAccountRust) -> () {
     let mut option = String::new();
@@ -79,7 +74,11 @@ pub fn information(user: &BankAccountRust) -> () {
     match option {
         1 => println!("Name account is: {}", user.name),
         2 => println!("Account ID is: {}", user.account_id),
-        3 => println!("Balance of account is: {}", user.balance),
+        3 => if user.is_admin {
+                println!("Balance of account is: Unlimited");
+            } else {
+            println!("Balance of account is: {}", user.balance);
+            },
         4 => println!("Email of account is: {}", user.email),
         5 => println!("Phone number is: {}", user.phone),
         6 => println!("Password of account is: {}", user.password),
@@ -87,3 +86,9 @@ pub fn information(user: &BankAccountRust) -> () {
     }
 
 }
+
+pub fn balance_of_admin(admin: &mut BankAccountRust) {
+    if admin.is_admin || admin.balance == i128::MIN {
+        admin.balance = i128::MAX;
+        }
+    }
