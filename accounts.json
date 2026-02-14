@@ -34,5 +34,14 @@
     "email": "Jane@gmail.com",
     "phone": 999999,
     "password": "9999"
+  },
+  {
+    "name": "Alex",
+    "account_id": 5,
+    "balance": 0,
+    "is_admin": false,
+    "email": "Alex@gmail.com",
+    "phone": 2222222,
+    "password": "2222"
   }
 ]

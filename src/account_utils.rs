@@ -57,7 +57,7 @@ pub fn creating_user(account_id: u32) -> BankAccountRust {
     }
 }
 
-pub fn information(user: &BankAccountRust) -> () {
+pub fn account_info(user: &BankAccountRust) -> () {
     let mut option = String::new();
     println!("Which type of info u need to know?
     1.Name of Account
@@ -73,7 +73,7 @@ pub fn information(user: &BankAccountRust) -> () {
     let option = option.trim().parse().expect("Error it has to be numeral from 1 to 6");
     match option {
         1 => println!("Name account is: {}", user.name),
-        2 => println!("Account ID is: {}", user.account_id),
+        2 => println!("Account ID is: {:06}", user.account_id),
         3 => println!("Balance of account is: {}", user.balance),
         4 => println!("Email of account is: {}", user.email),
         5 => println!("Phone number is: {}", user.phone),
@@ -83,7 +83,7 @@ pub fn information(user: &BankAccountRust) -> () {
 
 }
 
-pub fn admin_information(admin: &mut BankAccountRust) -> () {
+pub fn admin_account_info(admin: &mut BankAccountRust) -> () {
     let mut option1 = String::new();
     println!("Which type of info u need to know?
     1.Name of Account
@@ -100,7 +100,7 @@ pub fn admin_information(admin: &mut BankAccountRust) -> () {
     let option1 = option1.trim().parse().expect("Error it has to be numeral from 1 to 6");
     match option1 {
         1 => println!("Name account is: {}", admin.name),
-        2 => println!("Account ID is: {}", admin.account_id),
+        2 => println!("Account ID is: {:06}", admin.account_id),
         3 => {
             let act_balance = balance_of_admin(admin);
             println!("Balance of account is: {}", act_balance)
@@ -154,3 +154,24 @@ pub fn balance_of_admin(admin: &mut BankAccountRust) -> i128 {
     }
     admin.balance
     }
+
+pub fn withdraw(user: &mut BankAccountRust) {
+    let mut money = String::new();
+    print!("How much money do u wna withdraw? ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut money);
+    let money: i128 = money.trim().parse().expect("Please write numerical");
+    if user.balance >= money {
+        user.balance -= money;
+        println!("Uu have withdrawn {} from your account", money);
+        println!("Ur balance is: {}", user.balance);
+    
+    } else {
+        println!("Not enough money to withdraw!");
+    }
+}
+
+pub fn panel(user: &mut BankAccountRust) {
+    let mut choice = String::new();
+    println!("")
+}

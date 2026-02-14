@@ -1,7 +1,7 @@
 use std::io::{self, Write};
 mod account_utils;
 use crate::account_utils as acut;
-
+use rpassword::read_password;
 
 fn main() {
     println!("Hello user this is test bank! Please login into the account!");
@@ -39,18 +39,17 @@ fn main() {
             Some(account) => {
                 print!("Account {} found. Please Write ur password: ", account.name);
                 io::stdout().flush().unwrap();
-                let mut account_password = String::new();
-                io::stdin().read_line(&mut account_password).unwrap();
+                let account_password = read_password().unwrap();
                 let account_password = account_password.trim().to_string();
                 if account_password == account.password {
                     io::stdout().flush().unwrap();
                     println!("Welcome back, {}!", account.name);
                     if account.is_admin {
                         let mut admin = account.clone(); 
-                        acut::admin_information(&mut admin);
+                        acut::admin_account_info(&mut admin);
                     }
                     else {
-                        acut::information(&account);
+                        acut::account_info(&account);
                     }
                 } else {
                     println!("Wrong password!");
