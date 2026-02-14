@@ -2,7 +2,10 @@
   {
     "name": "Pavel",
     "account_id": 1,
-    "balance": 100,
+    "balance": {
+      "EUR": 0.0,
+      "USD": 100.0
+    },
     "is_admin": false,
     "email": "Pavel@gmail.com",
     "phone": 1111111,
@@ -11,7 +14,10 @@
   {
     "name": "Peter",
     "account_id": 2,
-    "balance": 0,
+    "balance": {
+      "EUR": 0.0,
+      "USD": 0.0
+    },
     "is_admin": false,
     "email": "Peter@gmail.com",
     "phone": 33333,
@@ -20,7 +26,10 @@
   {
     "name": "Admin",
     "account_id": 0,
-    "balance": 0,
+    "balance": {
+      "EUR": 0.0,
+      "USD": 0.0
+    },
     "is_admin": true,
     "email": "Admin",
     "phone": 33333,
@@ -29,7 +38,10 @@
   {
     "name": "Jane",
     "account_id": 4,
-    "balance": 0,
+    "balance": {
+      "USD": 0.0,
+      "EUR": 0.0
+    },
     "is_admin": false,
     "email": "Jane@gmail.com",
     "phone": 999999,
@@ -38,10 +50,25 @@
   {
     "name": "Alex",
     "account_id": 5,
-    "balance": 0,
+    "balance": {
+      "EUR": 0.0,
+      "USD": 0.0
+    },
     "is_admin": false,
     "email": "Alex@gmail.com",
     "phone": 2222222,
     "password": "2222"
+  },
+  {
+    "name": "Daniel",
+    "account_id": 6,
+    "balance": {
+      "USD": 0.0,
+      "EUR": 0.0
+    },
+    "is_admin": false,
+    "email": "daniel@mail.ru",
+    "phone": 777777,
+    "password": "111"
   }
 ]

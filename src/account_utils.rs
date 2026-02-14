@@ -1,16 +1,35 @@
 use std::fs;
 use std::io::{self, Write};
 use serde::{Deserialize, Serialize};
-
+use std::collections::HashMap;
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BankAccountRust {
     pub name: String,
     pub account_id: u32,
-    pub balance: i128,
+    pub balance: HashMap<String, f64>,
     pub is_admin: bool,
     pub email: String,
     pub phone: u32,
     pub password: String,
+}
+
+impl BankAccountRust {
+    pub fn new() -> Self {
+        let mut balance = HashMap::new();
+        balance.insert("USD".to_string(), 0.0);
+        balance.insert("EUR".to_string(), 0.0);
+        
+
+        Self {
+            name: String::new(),
+            account_id: 0,
+            balance,
+            is_admin: false,
+            email: String::new(),
+            phone: 0,
+            password: String::new(),
+        }
+    }
 }
 
 pub fn save_account(accounts: &Vec<BankAccountRust>, path: &str) -> io::Result<()> {
@@ -21,43 +40,39 @@ pub fn save_account(accounts: &Vec<BankAccountRust>, path: &str) -> io::Result<(
 
 pub fn load_account(path: &str) -> io::Result<Vec<BankAccountRust>> {
     let file_content = fs::read_to_string(path)?;
-    let accounts: Vec<BankAccountRust> = serde_json::from_str(&file_content).unwrap();
+    let accounts: Vec<BankAccountRust> = serde_json::from_str(&file_content).unwrap_or_else(|_| Vec::new());
     Ok(accounts)
 }
 
 pub fn creating_user(account_id: u32) -> BankAccountRust {
-    let mut name = String::new();
-    let mut email = String::new();
-    let mut phone_string = String::new();
-    let mut password = String::new();
+    let mut user = BankAccountRust::new();  
+    user.account_id = account_id;
+
     print!("Lets create ur account. Whats ur name?: ");
     io::stdout().flush().unwrap();
-    io::stdin().read_line(&mut name).expect("Error");
-    let name = name.trim().to_string();
+    io::stdin().read_line(&mut user.name).unwrap();
+    user.name = user.name.trim().to_string();
+
     print!("Whats ur email?: ");
     io::stdout().flush().unwrap();
-    io::stdin().read_line(&mut email).expect("Error");
-    let email = email.trim().to_string();
+    io::stdin().read_line(&mut user.email).unwrap();
+    user.email = user.email.trim().to_string();
+
+    let mut phone_string = String::new();
     print!("Whats ur phone number?: ");
     io::stdout().flush().unwrap();
-    io::stdin().read_line(&mut phone_string).expect("Error");
-    let phone = phone_string.trim().parse().expect("Error");
-    print!("Lets write ur password! Create password: ");
+    io::stdin().read_line(&mut phone_string).unwrap();
+    user.phone = phone_string.trim().parse().unwrap();
+
+    print!("Create password: ");
     io::stdout().flush().unwrap();
-    io::stdin().read_line(&mut password).expect("Error");
-    let password = password.trim().to_string();
-    BankAccountRust { 
-        name, 
-        account_id, 
-        balance: 0,
-        is_admin: false, 
-        email, 
-        phone, 
-        password,
-    }
+    io::stdin().read_line(&mut user.password).unwrap();
+    user.password = user.password.trim().to_string();
+
+    user
 }
 
-pub fn account_info(user: &mut BankAccountRust) -> () {
+pub fn account_info(user: &mut BankAccountRust) {
     let mut option = String::new();
     println!("Which type of info u need to know?
     1.Name of Account
@@ -74,7 +89,7 @@ pub fn account_info(user: &mut BankAccountRust) -> () {
     match option {
         1 => println!("Name account is: {}", user.name),
         2 => println!("Account ID is: {:06}", user.account_id),
-        3 => println!("Balance of account is: {}", user.balance),
+        3 => println!("Balance of account is: {:?}", user.balance),
         4 => println!("Email of account is: {}", user.email),
         5 => println!("Phone number is: {}", user.phone),
         6 => println!("Password of account is: {}", user.password),
@@ -83,7 +98,7 @@ pub fn account_info(user: &mut BankAccountRust) -> () {
 
 }
 
-pub fn admin_account_info(admin: &mut BankAccountRust) -> () {
+pub fn admin_account_info(admin: &mut BankAccountRust) {
     let mut option1 = String::new();
     println!("Which type of info u need to know?
     1.Name of Account
@@ -102,8 +117,7 @@ pub fn admin_account_info(admin: &mut BankAccountRust) -> () {
         1 => println!("Name account is: {}", admin.name),
         2 => println!("Account ID is: {:06}", admin.account_id),
         3 => {
-            let act_balance = balance_of_admin(admin);
-            println!("Balance of account is: {}", act_balance)
+            println!("Balance of account is: {:?}", admin.balance)
         },
         4 => println!("Email of account is: {}", admin.email),
         5 => println!("Phone number is: {}", admin.phone),
@@ -145,52 +159,62 @@ pub fn admin_account_info(admin: &mut BankAccountRust) -> () {
 }
 
 
-pub fn balance_of_admin(admin: &mut BankAccountRust) -> i128 {
-    if admin.is_admin || admin.balance == i128::MIN {
-        admin.balance = i128::MAX;
-        }
-    else {
-        println!("Error")
-    }
-    admin.balance
-    }
-
 pub fn top_up(user: &mut BankAccountRust) {
-    let mut accounts: Vec<BankAccountRust> = load_account("accounts.json").unwrap();
-    let mut money = String::new();
-    print!("How much money do u wna put on ur account? ");
-    io::stdout().flush().unwrap();
-    io::stdin().read_line(&mut money);
-    let money: i128 = money.trim().parse().expect("Please write numerical");
-    user.balance += money;
-    println!("u have deposited {} on ur account", money);
-    println!("Ur balance is: {}", user.balance);
-    let acc: &mut BankAccountRust = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
-    acc.balance = user.balance;
-    save_account(&accounts, "accounts.json");
+    let mut accounts = load_account("accounts.json").unwrap();
 
+    let mut currency = String::new();
+    print!("Enter currency (USD/EUR/etc): ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut currency).unwrap();
+    let currency = currency.trim().to_uppercase();
+    let mut money = String::new();
+    print!("How much money do u want to deposit?: ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut money).unwrap();
+    let money: f64 = money.trim().parse().expect("Please write number");
+
+    // если валюты нет — создаём
+    let balance_entry = user.balance.entry(currency.clone()).or_insert(0.0);
+    *balance_entry += money;
+
+    println!("Deposited {} {}", money, currency);
+    println!("New balance: {}", balance_entry);
+
+    let acc = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
+    acc.balance = user.balance.clone();
+    save_account(&accounts, "accounts.json").unwrap();
 }
 
-
-
 pub fn withdraw(user: &mut BankAccountRust) {
-    let mut money = String::new();
-    print!("How much money do u wna withdraw? ");
+    let mut currency = String::new();
+    print!("Enter currency (USD/EUR/etc): ");
     io::stdout().flush().unwrap();
-    io::stdin().read_line(&mut money);
-    let money: i128 = money.trim().parse().expect("Please write numerical");
-    if user.balance >= money {
-        user.balance -= money;
-        println!("Uu have withdrawn {} from your account", money);
-        println!("Ur balance is: {}", user.balance);
-    
-    } else {
-        println!("Not enough money to withdraw!");
+    io::stdin().read_line(&mut currency).unwrap();
+    let currency = currency.trim().to_uppercase();
+
+    let mut money = String::new();
+    print!("How much money do u want to withdraw?: ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut money).unwrap();
+    let money: f64 = money.trim().parse().expect("Please write number");
+
+    match user.balance.get_mut(&currency) {
+        Some(balance) => {
+            if *balance >= money {
+                *balance -= money;
+                println!("Withdrawn {} {}", money, currency);
+                println!("Remaining balance: {}", balance);
+            } else {
+                println!("Not enough funds!");
+            }
+        }
+        None => println!("You do not have this currency account."),
     }
-    let mut accounts: Vec<BankAccountRust> = load_account("accounts.json").unwrap();
-    let acc: &mut BankAccountRust = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
-    acc.balance = user.balance;
-    save_account(&accounts, "accounts.json");
+
+    let mut accounts = load_account("accounts.json").unwrap();
+    let acc = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
+    acc.balance = user.balance.clone();
+    save_account(&accounts, "accounts.json").unwrap();
 }
 
 pub fn panel(user: &mut BankAccountRust) {
