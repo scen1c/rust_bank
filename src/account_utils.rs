@@ -57,7 +57,7 @@ pub fn creating_user(account_id: u32) -> BankAccountRust {
     }
 }
 
-pub fn account_info(user: &BankAccountRust) -> () {
+pub fn account_info(user: &mut BankAccountRust) -> () {
     let mut option = String::new();
     println!("Which type of info u need to know?
     1.Name of Account
@@ -70,7 +70,7 @@ pub fn account_info(user: &BankAccountRust) -> () {
     print!("Choose from 1 to 6: ");
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut option).unwrap();
-    let option = option.trim().parse().expect("Error it has to be numeral from 1 to 6");
+    let option: i8 = option.trim().parse().expect("Error it has to be numeral from 1 to 6");
     match option {
         1 => println!("Name account is: {}", user.name),
         2 => println!("Account ID is: {:06}", user.account_id),
@@ -97,7 +97,7 @@ pub fn admin_account_info(admin: &mut BankAccountRust) -> () {
     print!("Choose from 1 to 6: ");
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut option1).unwrap();
-    let option1 = option1.trim().parse().expect("Error it has to be numeral from 1 to 6");
+    let option1: i8 = option1.trim().parse().expect("Error it has to be numeral from 1 to 6");
     match option1 {
         1 => println!("Name account is: {}", admin.name),
         2 => println!("Account ID is: {:06}", admin.account_id),
@@ -116,7 +116,7 @@ pub fn admin_account_info(admin: &mut BankAccountRust) -> () {
             print!("Choose from 1 to 1: ");
             io::stdout().flush().unwrap();
             io::stdin().read_line(&mut option2).unwrap();
-            let option2: i32 = option2.trim().parse().expect("Error it has to be numeral from 1 to 1");
+            let option2: i8 = option2.trim().parse().expect("Error it has to be numeral from 1 to 1");
             match option2 {
                 1 => {
                     let accounts = load_account("accounts.json").expect("Smth wrong!");
@@ -155,6 +155,24 @@ pub fn balance_of_admin(admin: &mut BankAccountRust) -> i128 {
     admin.balance
     }
 
+pub fn top_up(user: &mut BankAccountRust) {
+    let mut accounts: Vec<BankAccountRust> = load_account("accounts.json").unwrap();
+    let mut money = String::new();
+    print!("How much money do u wna put on ur account? ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut money);
+    let money: i128 = money.trim().parse().expect("Please write numerical");
+    user.balance += money;
+    println!("u have deposited {} on ur account", money);
+    println!("Ur balance is: {}", user.balance);
+    let acc: &mut BankAccountRust = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
+    acc.balance = user.balance;
+    save_account(&accounts, "accounts.json");
+
+}
+
+
+
 pub fn withdraw(user: &mut BankAccountRust) {
     let mut money = String::new();
     print!("How much money do u wna withdraw? ");
@@ -169,9 +187,38 @@ pub fn withdraw(user: &mut BankAccountRust) {
     } else {
         println!("Not enough money to withdraw!");
     }
+    let mut accounts: Vec<BankAccountRust> = load_account("accounts.json").unwrap();
+    let acc: &mut BankAccountRust = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
+    acc.balance = user.balance;
+    save_account(&accounts, "accounts.json");
 }
 
 pub fn panel(user: &mut BankAccountRust) {
-    let mut choice = String::new();
-    println!("")
+    let mut option = String::new();
+    println!("This is panel of RustBank(Pet project)
+    This is options that u can do on ur account:
+    1.Check information
+    2.Top up balance
+    3.Withdraw money"
+    );
+    print!("Choose option from 1 to 3: ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut option).unwrap();
+    let option = option.trim().parse().expect("Error it has to be numeral from 1 to 6");
+    match option {
+        1 => {
+            if user.is_admin {
+                        let mut admin = user.clone(); 
+                        admin_account_info(&mut admin);
+                    }
+                    else {
+                        let mut user = user.clone();
+                        account_info(&mut user);
+                    }
+        },
+        2 => top_up(user),
+        3 => withdraw(user),
+
+        _ => println!("Error, try again")
+    };
 }

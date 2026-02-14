@@ -44,13 +44,8 @@ fn main() {
                 if account_password == account.password {
                     io::stdout().flush().unwrap();
                     println!("Welcome back, {}!", account.name);
-                    if account.is_admin {
-                        let mut admin = account.clone(); 
-                        acut::admin_account_info(&mut admin);
-                    }
-                    else {
-                        acut::account_info(&account);
-                    }
+                    let mut user = account.clone();
+                    acut::panel(&mut user);
                 } else {
                     println!("Wrong password!");
                 }
