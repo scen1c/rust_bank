@@ -173,7 +173,6 @@ pub fn top_up(user: &mut BankAccountRust) {
     io::stdin().read_line(&mut money).unwrap();
     let money: f64 = money.trim().parse().expect("Please write number");
 
-    // если валюты нет — создаём
     let balance_entry = user.balance.entry(currency.clone()).or_insert(0.0);
     *balance_entry += money;
 
@@ -217,18 +216,92 @@ pub fn withdraw(user: &mut BankAccountRust) {
     save_account(&accounts, "accounts.json").unwrap();
 }
 
+pub fn convertation(user: &mut BankAccountRust) {
+    
+    const EUR_TO_USD: f64 = 1.18;
+    const USD_TO_EUR: f64 = 1.0 / 1.18;
+
+    let mut from = String::new();
+    let mut to = String::new();
+
+    print!("Convert FROM (USD/EUR): ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut from).unwrap();
+    let from = from.trim().to_uppercase();
+
+    print!("Convert TO (USD/EUR): ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut to).unwrap();
+    let to = to.trim().to_uppercase();
+
+    if from == to {
+        println!("You selected same currency.");
+        return;
+    }
+
+    let rate = match (from.as_str(), to.as_str()) {
+        ("EUR", "USD") => EUR_TO_USD,
+        ("USD", "EUR") => USD_TO_EUR,
+        _ => {
+            println!("Unsupported currency pair.");
+            return;
+        }
+    };
+
+    let balance_from = match user.balance.get_mut(&from) {
+        Some(b) => b,
+        None => {
+            println!("You don't have this currency.");
+            return;
+        }
+    };
+
+    let mut money = String::new();
+    print!("How much money you want to convert: ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut money).unwrap();
+    let money: f64 = match money.trim().parse() {
+        Ok(m) => m,
+        Err(_) => {
+            println!("Invalid number.");
+            return;
+        }
+    };
+
+    if *balance_from < money {
+        println!("Not enough balance.");
+        return;
+    }
+
+    *balance_from -= money;
+
+    let converted = money * rate;
+
+    user.balance
+        .entry(to.clone())
+        .and_modify(|b| *b += converted)
+        .or_insert(converted);
+
+    let mut accounts = load_account("accounts.json").unwrap();
+    let acc = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
+    acc.balance = user.balance.clone();
+    save_account(&accounts, "accounts.json").unwrap();
+    println!("Successfully converted!");
+}
+
 pub fn panel(user: &mut BankAccountRust) {
     let mut option = String::new();
     println!("This is panel of RustBank(Pet project)
     This is options that u can do on ur account:
     1.Check information
     2.Top up balance
-    3.Withdraw money"
+    3.Withdraw mone
+    4.Convertation"
     );
-    print!("Choose option from 1 to 3: ");
+    print!("Choose option from 1 to 4: ");
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut option).unwrap();
-    let option = option.trim().parse().expect("Error it has to be numeral from 1 to 6");
+    let option = option.trim().parse().expect("Error it has to be numeral from 1 to 4");
     match option {
         1 => {
             if user.is_admin {
@@ -242,7 +315,7 @@ pub fn panel(user: &mut BankAccountRust) {
         },
         2 => top_up(user),
         3 => withdraw(user),
-
+        4 => convertation(user),
         _ => println!("Error, try again")
     };
 }
