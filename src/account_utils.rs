@@ -277,10 +277,7 @@ pub fn convertation(user: &mut BankAccountRust) {
 
     let converted = money * rate;
 
-    user.balance
-        .entry(to.clone())
-        .and_modify(|b| *b += converted)
-        .or_insert(converted);
+    user.balance.entry(to.clone()).and_modify(|b| *b += converted).or_insert(converted);
 
     let mut accounts = load_account("accounts.json").unwrap();
     let acc = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
@@ -289,6 +286,55 @@ pub fn convertation(user: &mut BankAccountRust) {
     println!("Successfully converted!");
 }
 
+
+pub fn transfer_to_account(user: &mut BankAccountRust) {
+    let mut accounts = load_account("accounts.json").unwrap();
+    let mut whom = String::new();
+    print!("Who do u wna send money to?: ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut whom).unwrap();
+    let whom = whom.trim().to_string();
+    let person = accounts.iter_mut().find(|a| a.name == whom);
+    if person.is_none() {
+        println!("There is no account with this name");
+        return;
+    }
+    let person = person.unwrap();
+    let mut value = String::new();
+    print!("From which balance do u wna send(EUR/USD): ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut value).unwrap();
+    let currency = value.trim().to_string().to_uppercase();
+    if currency != "USD" && currency != "EUR" {
+        println!("Error format");
+        return;
+    };
+    let mut money = String::new();
+    print!("How much money do u wna send?: ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut money).unwrap();
+    let money: f64= money.trim().parse().expect("Error");
+    let sender_balance = user.balance.entry(currency.clone()).or_insert(0.0);
+    if *sender_balance < money {
+        println!("Not enough money from ur {currency} balance: {sender_balance}");
+        return;
+    };
+    *sender_balance -= money;
+
+    
+    person.balance.entry(currency.clone()).and_modify(|b| *b += money).or_insert(money);
+
+    let mut accounts = load_account("accounts.json").unwrap();
+    let acc1 = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
+    acc1.balance = user.balance.clone();
+    let acc2 = accounts.iter_mut().find(|b| b.name == person.name).unwrap();
+    acc2.balance = person.balance.clone();
+    save_account(&accounts, "accounts.json").unwrap();
+    println!("Successfully send it to {0:?}!", person.name);
+
+}
+
+
 pub fn panel(user: &mut BankAccountRust) {
     let mut option = String::new();
     println!("This is panel of RustBank(Pet project)
@@ -296,12 +342,13 @@ pub fn panel(user: &mut BankAccountRust) {
     1.Check information
     2.Top up balance
     3.Withdraw mone
-    4.Convertation"
+    4.Convertation
+    5.Transfer money to"
     );
-    print!("Choose option from 1 to 4: ");
+    print!("Choose option from 1 to 5: ");
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut option).unwrap();
-    let option = option.trim().parse().expect("Error it has to be numeral from 1 to 4");
+    let option = option.trim().parse().expect("Error it has to be numeral from 1 to 5");
     match option {
         1 => {
             if user.is_admin {
@@ -316,6 +363,7 @@ pub fn panel(user: &mut BankAccountRust) {
         2 => top_up(user),
         3 => withdraw(user),
         4 => convertation(user),
+        5 => transfer_to_account(user),
         _ => println!("Error, try again")
     };
 }

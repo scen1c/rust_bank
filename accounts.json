@@ -3,8 +3,8 @@
     "name": "Pavel",
     "account_id": 1,
     "balance": {
-      "USD": 50.0,
-      "EUR": 42.37288135593221
+      "EUR": 42.37288135593221,
+      "USD": 40.0
     },
     "is_admin": false,
     "email": "Pavel@gmail.com",
@@ -28,7 +28,7 @@
     "account_id": 0,
     "balance": {
       "EUR": 0.0,
-      "USD": 0.0
+      "USD": 10.0
     },
     "is_admin": true,
     "email": "Admin",
@@ -39,8 +39,8 @@
     "name": "Jane",
     "account_id": 4,
     "balance": {
-      "USD": 0.0,
-      "EUR": 0.0
+      "EUR": 0.0,
+      "USD": 0.0
     },
     "is_admin": false,
     "email": "Jane@gmail.com",
@@ -51,8 +51,8 @@
     "name": "Alex",
     "account_id": 5,
     "balance": {
-      "USD": 0.0,
-      "EUR": 0.0
+      "EUR": 0.0,
+      "USD": 0.0
     },
     "is_admin": false,
     "email": "Alex@gmail.com",
