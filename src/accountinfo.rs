@@ -1,7 +1,8 @@
-use std::fs;
 use std::io::{self, Write};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use crate::saveload as sl;
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BankAccountRust {
     pub name: String,
@@ -32,17 +33,6 @@ impl BankAccountRust {
     }
 }
 
-pub fn save_account(accounts: &Vec<BankAccountRust>, path: &str) -> io::Result<()> {
-    let json = serde_json::to_string_pretty(accounts).unwrap();
-    fs::write(path, json)?;
-    Ok(())
-}
-
-pub fn load_account(path: &str) -> io::Result<Vec<BankAccountRust>> {
-    let file_content = fs::read_to_string(path)?;
-    let accounts: Vec<BankAccountRust> = serde_json::from_str(&file_content).unwrap_or_else(|_| Vec::new());
-    Ok(accounts)
-}
 
 pub fn creating_user(account_id: u32) -> BankAccountRust {
     let mut user = BankAccountRust::new();  
@@ -133,7 +123,7 @@ pub fn admin_account_info(admin: &mut BankAccountRust) {
             let option2: i8 = option2.trim().parse().expect("Error it has to be numeral from 1 to 1");
             match option2 {
                 1 => {
-                    let accounts = load_account("accounts.json").expect("Smth wrong!");
+                    let accounts = sl::load_account("accounts.json").expect("Smth wrong!");
                     
                     let mut name_finder = String::new();
                     print!("What name u want find?: ");
@@ -160,7 +150,7 @@ pub fn admin_account_info(admin: &mut BankAccountRust) {
 
 
 pub fn top_up(user: &mut BankAccountRust) {
-    let mut accounts = load_account("accounts.json").unwrap();
+    let mut accounts = sl::load_account("accounts.json").unwrap();
 
     let mut currency = String::new();
     print!("Enter currency (USD/EUR/etc): ");
@@ -181,7 +171,7 @@ pub fn top_up(user: &mut BankAccountRust) {
 
     let acc = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
     acc.balance = user.balance.clone();
-    save_account(&accounts, "accounts.json").unwrap();
+    sl::save_account(&accounts, "accounts.json").unwrap();
 }
 
 pub fn withdraw(user: &mut BankAccountRust) {
@@ -210,10 +200,10 @@ pub fn withdraw(user: &mut BankAccountRust) {
         None => println!("You do not have this currency account."),
     }
 
-    let mut accounts = load_account("accounts.json").unwrap();
+    let mut accounts = sl::load_account("accounts.json").unwrap();
     let acc = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
     acc.balance = user.balance.clone();
-    save_account(&accounts, "accounts.json").unwrap();
+    sl::save_account(&accounts, "accounts.json").unwrap();
 }
 
 pub fn convertation(user: &mut BankAccountRust) {
@@ -279,16 +269,16 @@ pub fn convertation(user: &mut BankAccountRust) {
 
     user.balance.entry(to.clone()).and_modify(|b| *b += converted).or_insert(converted);
 
-    let mut accounts = load_account("accounts.json").unwrap();
+    let mut accounts = sl::load_account("accounts.json").unwrap();
     let acc = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
     acc.balance = user.balance.clone();
-    save_account(&accounts, "accounts.json").unwrap();
+    sl::save_account(&accounts, "accounts.json").unwrap();
     println!("Successfully converted!");
 }
 
 
 pub fn transfer_to_account(user: &mut BankAccountRust) {
-    let mut accounts = load_account("accounts.json").unwrap();
+    let mut accounts = sl::load_account("accounts.json").unwrap();
     let mut whom = String::new();
     print!("Who do u wna send money to?: ");
     io::stdout().flush().unwrap();
@@ -324,12 +314,12 @@ pub fn transfer_to_account(user: &mut BankAccountRust) {
     
     person.balance.entry(currency.clone()).and_modify(|b| *b += money).or_insert(money);
 
-    let mut accounts = load_account("accounts.json").unwrap();
+    let mut accounts = sl::load_account("accounts.json").unwrap();
     let acc1 = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
     acc1.balance = user.balance.clone();
     let acc2 = accounts.iter_mut().find(|b| b.name == person.name).unwrap();
     acc2.balance = person.balance.clone();
-    save_account(&accounts, "accounts.json").unwrap();
+   sl:: save_account(&accounts, "accounts.json").unwrap();
     println!("Successfully send it to {0:?}!", person.name);
 
 }
