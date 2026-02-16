@@ -3,7 +3,10 @@ mod accountinfo;
 use crate::accountinfo as acut;
 mod saveload;
 use crate::saveload as sl;
+mod money_manipulations;
 use rpassword::read_password;
+
+
 fn main() {
     println!("Hello user this is test bank! Please login into the account!");
     print!("Do u have account? (y/n): ");
