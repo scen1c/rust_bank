@@ -1,8 +1,10 @@
 use std::io::{self, Write};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use crate::password::hash_password;
 use crate::saveload as sl;
 use crate::money_manipulations as mm;
+use crate::password as pw;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BankAccountRust {
@@ -35,6 +37,8 @@ impl BankAccountRust {
 }
 
 
+
+
 pub fn creating_user(account_id: u32) -> BankAccountRust {
     let mut user = BankAccountRust::new();  
     user.account_id = account_id;
@@ -59,6 +63,7 @@ pub fn creating_user(account_id: u32) -> BankAccountRust {
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut user.password).unwrap();
     user.password = user.password.trim().to_string();
+    user.password = pw::hash_password(&user.password);
 
     user
 }
@@ -113,7 +118,7 @@ pub fn account_info(user: &mut BankAccountRust) {
     match option {
         1 => println!("Name account is: {}", user.name),
         2 => println!("Account ID is: {:06}", user.account_id),
-        3 => println!("Balance of account is: {:?}", user.balance),
+        3 => println!("Balance of account is: {:#?}", user.balance),
         4 => println!("Email of account is: {}", user.email),
         5 => println!("Phone number is: {}", user.phone),
         6 => println!("Password of account is: {}", user.password),
@@ -141,7 +146,7 @@ pub fn admin_account_info(admin: &mut BankAccountRust) {
         1 => println!("Name account is: {}", admin.name),
         2 => println!("Account ID is: {:06}", admin.account_id),
         3 => {
-            println!("Balance of account is: {:?}", admin.balance)
+            println!("Balance of account is: {:#?}", admin.balance)
         },
         4 => println!("Email of account is: {}", admin.email),
         5 => println!("Phone number is: {}", admin.phone),

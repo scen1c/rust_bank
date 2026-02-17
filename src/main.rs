@@ -2,8 +2,12 @@ use std::io::{self, Write};
 mod accountinfo;
 use crate::accountinfo as acut;
 mod saveload;
+use crate::password::migrate_passwords;
+use crate::password::verify_password;
 use crate::saveload as sl;
 mod money_manipulations;
+mod password;
+use crate::password as pw;
 use rpassword::read_password;
 
 
@@ -45,13 +49,18 @@ fn main() {
                 io::stdout().flush().unwrap();
                 let account_password = read_password().unwrap();
                 let account_password = account_password.trim().to_string();
-                if account_password == account.password {
-                    io::stdout().flush().unwrap();
+                if pw::verify_password(&account_password, &account.password) {
+                    println!("Welcome back, {}!", account.name);
+                    let mut user = account.clone();
+                    acut::panel(&mut user);
+                } else if account_password == account.password {
+                    let mut accounts = sl::load_account("accounts.json").unwrap_or_else(|_| Vec::new());
+                    migrate_passwords(&mut accounts);
                     println!("Welcome back, {}!", account.name);
                     let mut user = account.clone();
                     acut::panel(&mut user);
                 } else {
-                    println!("Wrong password!");
+                    println!("Try again later!")
                 }
                 
             },  
