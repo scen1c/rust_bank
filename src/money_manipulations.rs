@@ -1,4 +1,4 @@
-use crate::accountinfo as ai;
+use crate::accountinfo::{self as ai, BankAccountRust};
 use std::io::{self, Write};
 use crate::saveload as sl;
 
@@ -26,6 +26,19 @@ pub fn top_up(user: &mut ai::BankAccountRust) {
     let acc = accounts.iter_mut().find(|a| a.name == user.name).unwrap();
     acc.balance = user.balance.clone();
     sl::save_account(&accounts, "accounts.json").unwrap();
+}
+
+pub fn top_up_test(user: &mut ai::BankAccountRust, currency: &str, money: f64) -> Result<(), String> {
+    let currency = currency.trim().to_uppercase();
+
+    if money <= 0.0 {
+        return Err("Money must be > 0".to_string());
+    }
+
+    let balance_entry = user.balance.entry(currency).or_insert(0.0);
+    *balance_entry += money;
+
+    Ok(())
 }
 
 pub fn withdraw(user: &mut ai::BankAccountRust) {
@@ -176,4 +189,33 @@ pub fn transfer_to_account(user: &mut ai::BankAccountRust) {
    sl:: save_account(&accounts, "accounts.json").unwrap();
     println!("Successfully send it to {0:?}!", person.name);
 
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::HashMap;
+
+    fn make_user() -> ai::BankAccountRust {
+        let mut balance = HashMap::new();
+        balance.insert("USD".to_string(), 500.0);
+        balance.insert("EUR".to_string(), 300.0);
+        ai::BankAccountRust {
+            name: "Michael".to_string(),
+            account_id: 10,
+            balance: balance,
+            password: "123456789".to_string(),
+            is_admin: false,
+            email: "michael@mail.com".to_string(),
+            phone: 0000
+        }
+    }
+
+    #[test]
+    fn top_up_adds_money_usd() {
+        let mut user = make_user();
+        top_up_test(&mut user, "USD", 20.0).unwrap();
+        assert_eq!(*user.balance.get("USD").unwrap(), 520.0);
+
+    }
 }

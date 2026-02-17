@@ -54,3 +54,35 @@ pub fn change_password(account: &mut acut::BankAccountRust) {
     };
 
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::HashMap;
+
+    fn make_user() -> acut::BankAccountRust {
+        let mut balance = HashMap::new();
+        balance.insert("USD".to_string(), 500.0);
+        balance.insert("EUR".to_string(), 300.0);
+        acut::BankAccountRust {
+            name: "Michael".to_string(),
+            account_id: 10,
+            balance: balance,
+            password: "123456789".to_string(),
+            is_admin: false,
+            email: "michael@mail.com".to_string(),
+            phone: 0000
+        }
+    }
+    #[test]
+    fn hash_password_check() {
+        let hash_check = hash_password("1234567890");
+        let plain = "1234567890";
+        assert!(is_bcrypt_hash(&hash_check));
+        assert_ne!(hash_check, plain);                
+        assert!(verify_password(plain, &hash_check));  
+        assert!(!verify_password("wrong", &hash_check));
+    }
+
+}
