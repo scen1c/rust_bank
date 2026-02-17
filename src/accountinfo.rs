@@ -1,7 +1,6 @@
 use std::io::{self, Write};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use crate::password::hash_password;
 use crate::saveload as sl;
 use crate::money_manipulations as mm;
 use crate::password as pw;
@@ -109,12 +108,13 @@ pub fn account_info(user: &mut BankAccountRust) {
     3.Balance
     4.Email
     5.Phone Number
-    6.Password"
+    6.Password
+    7.Change password"
     );
-    print!("Choose from 1 to 6: ");
+    print!("Choose from 1 to 7: ");
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut option).unwrap();
-    let option: i8 = option.trim().parse().expect("Error it has to be numeral from 1 to 6");
+    let option: i8 = option.trim().parse().expect("Error it has to be numeral from 1 to 7");
     match option {
         1 => println!("Name account is: {}", user.name),
         2 => println!("Account ID is: {:06}", user.account_id),
@@ -122,6 +122,7 @@ pub fn account_info(user: &mut BankAccountRust) {
         4 => println!("Email of account is: {}", user.email),
         5 => println!("Phone number is: {}", user.phone),
         6 => println!("Password of account is: {}", user.password),
+        7 => pw::change_password(user),
         _ => println!("You have chosen wrong number, try again!"),
     }
 

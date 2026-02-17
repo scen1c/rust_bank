@@ -1,3 +1,4 @@
+use std::io::{self, Write};
 use bcrypt::{hash, verify, DEFAULT_COST};
 use crate::accountinfo as acut;
 use crate::saveload as sl;
@@ -30,4 +31,27 @@ pub fn migrate_passwords(accounts: &mut Vec<acut::BankAccountRust>) -> bool {
         sl::save_account(accounts, "accounts.json").unwrap();
     }
     changed
+}
+
+pub fn change_password(account: &mut acut::BankAccountRust) {
+    let mut prev_password = String::new();
+    print!("Write ur password!: ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut prev_password).unwrap();
+    let prev_password = prev_password.trim();
+    if verify_password(&prev_password, &account.password) {
+        let mut new_password = String::new();
+        print!("Write ur new password: ");
+        io::stdout().flush().unwrap();
+        io::stdin().read_line(&mut new_password).unwrap();
+        let new_password = new_password.trim();
+        account.password = hash_password(&new_password);
+        let mut accounts = sl::load_account("accounts.json").unwrap();
+        let acc = accounts.iter_mut().find(|a| a.name == account.name).unwrap();
+        acc.password = account.password.clone();
+        sl::save_account(&accounts, "accounts.json").unwrap();
+    } else {
+        println!("This is not ur password")
+    };
+
 }

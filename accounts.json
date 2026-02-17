@@ -3,13 +3,13 @@
     "name": "Pavel",
     "account_id": 1,
     "balance": {
-      "EUR": 42.37288135593221,
-      "USD": 20.0
+      "USD": 20.0,
+      "EUR": 42.37288135593221
     },
     "is_admin": false,
     "email": "Pavel@gmail.com",
     "phone": 1111111,
-    "password": "$2b$12$UWGwzZozqL.5bIhld6.CBeUIFiKbmCJou4d0iaolFZFNVlO4OHSaG"
+    "password": "$2b$12$HsQwg2y/z/xz3A8serS.N.v5G2060KmcJVG9e8UKKF56WOXxmQyz2"
   },
   {
     "name": "Peter",
@@ -51,8 +51,8 @@
     "name": "Alex",
     "account_id": 5,
     "balance": {
-      "USD": 0.0,
-      "EUR": 0.0
+      "EUR": 0.0,
+      "USD": 0.0
     },
     "is_admin": false,
     "email": "Alex@gmail.com",
@@ -63,8 +63,8 @@
     "name": "Daniel",
     "account_id": 6,
     "balance": {
-      "EUR": 0.0,
-      "USD": 0.0
+      "USD": 0.0,
+      "EUR": 0.0
     },
     "is_admin": false,
     "email": "daniel@mail.ru",

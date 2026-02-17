@@ -3,7 +3,6 @@ mod accountinfo;
 use crate::accountinfo as acut;
 mod saveload;
 use crate::password::migrate_passwords;
-use crate::password::verify_password;
 use crate::saveload as sl;
 mod money_manipulations;
 mod password;
