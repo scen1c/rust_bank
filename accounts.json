@@ -1,86 +1,11 @@
 [
   {
-    "name": "Pavel",
+    "name": "User1",
     "account_id": 1,
-    "balance": {
-      "USD": 20.0,
-      "EUR": 42.37288135593221
-    },
+    "balance": {},
     "is_admin": false,
-    "email": "Pavel@gmail.com",
-    "phone": 1111111,
-    "password": "$2b$12$8FzpZAXnPC5qpuLeCLhKRehaKGpzohoIZgORDVtNBwhlRdn2lGE/K"
-  },
-  {
-    "name": "Peter",
-    "account_id": 2,
-    "balance": {
-      "EUR": 0.0,
-      "USD": 0.0
-    },
-    "is_admin": false,
-    "email": "Peter@gmail.com",
-    "phone": 33333,
-    "password": "$2b$12$3.8nITG9QCTr2/kuXgcTi.skSZh19jUz02SgJ3iH8mOlVYoBskXJC"
-  },
-  {
-    "name": "Admin",
-    "account_id": 0,
-    "balance": {
-      "USD": 30.0,
-      "EUR": 0.0
-    },
-    "is_admin": true,
-    "email": "Admin",
-    "phone": 33333,
-    "password": "$2b$12$gux1EAo8.qR46aLLKzC63edKWyIzRmm2sf1PYvNNiP82YUIWG.aku"
-  },
-  {
-    "name": "Jane",
-    "account_id": 4,
-    "balance": {
-      "USD": 0.0,
-      "EUR": 0.0
-    },
-    "is_admin": false,
-    "email": "Jane@gmail.com",
-    "phone": 999999,
-    "password": "$2b$12$e/g1kiX/PEB2Ws728omKSe1rCfnk0MCd5fQZC9kIDgBIOUvDGF8xG"
-  },
-  {
-    "name": "Alex",
-    "account_id": 5,
-    "balance": {
-      "USD": 0.0,
-      "EUR": 0.0
-    },
-    "is_admin": false,
-    "email": "Alex@gmail.com",
-    "phone": 2222222,
-    "password": "$2b$12$e.wuEt3yc4NJ/z3Gv4TPj.r/FzyYZ3u4InurGk4s3HCkfwsyeURqe"
-  },
-  {
-    "name": "Daniel",
-    "account_id": 6,
-    "balance": {
-      "EUR": 0.0,
-      "USD": 0.0
-    },
-    "is_admin": false,
-    "email": "daniel@mail.ru",
-    "phone": 777777,
-    "password": "$2b$12$1JTOGShItONNLLwkY5g4u.8bq1QZv4/QivHFxKvoWI7yeUqaKYpqO"
-  },
-  {
-    "name": "Jack",
-    "account_id": 7,
-    "balance": {
-      "EUR": 0.0,
-      "USD": 0.0
-    },
-    "is_admin": false,
-    "email": "jack@gmail.com",
-    "phone": 7777777,
-    "password": "$2b$12$.nR9PcePjAuj9rkhGO6gleOegoHRATj8LDzsbcMLrLzoP85PkM/bK"
+    "email": "a@mail.com",
+    "phone": 0,
+    "password": "$2b$12$y32xvmN4fl2q0gEIaXHy1OpQ/Wahnd/3HSNDCxcz05PwH9ON9i0eS"
   }
 ]

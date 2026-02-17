@@ -1,4 +1,4 @@
-use crate::accountinfo::{self as ai, BankAccountRust};
+use crate::accountinfo as ai;
 use std::io::{self, Write};
 use crate::saveload as sl;
 
@@ -27,7 +27,6 @@ pub fn top_up(user: &mut ai::BankAccountRust) {
     acc.balance = user.balance.clone();
     sl::save_account(&accounts, "accounts.json").unwrap();
 }
-
 pub fn top_up_test(user: &mut ai::BankAccountRust, currency: &str, money: f64) -> Result<(), String> {
     let currency = currency.trim().to_uppercase();
 

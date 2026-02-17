@@ -76,7 +76,7 @@ mod tests {
         }
     }
     #[test]
-    fn hash_password_check() {
+    fn hash_password_test() {
         let hash_check = hash_password("1234567890");
         let plain = "1234567890";
         assert!(is_bcrypt_hash(&hash_check));
@@ -84,5 +84,50 @@ mod tests {
         assert!(verify_password(plain, &hash_check));  
         assert!(!verify_password("wrong", &hash_check));
     }
+    #[test]
+    fn verify_password_test() {
+    let plain = "1234567890";
+    let hashed = hash_password(plain);
 
+    assert!(verify_password(plain, &hashed));
+    assert_ne!(hashed, plain);
+    assert!(!verify_password("wrong", &hashed));
+
+    let h1 = hash_password("123");
+    let h2 = hash_password("123");
+    assert_ne!(h1, h2);
+
+    assert!(verify_password("123", &h1));
+    assert!(verify_password("123", &h2));
+}
+    #[test]
+    fn is_bcrypt_hash_test() {
+        let plain = "1234567890";
+        let hashed= &hash_password(plain);
+        assert!(is_bcrypt_hash(hashed));
+        assert!(!is_bcrypt_hash("1234567890"));
+        
+    }
+    #[test]
+    fn migrate_passwords_hashes_plaintext() {
+    let user2 = make_user();
+    let mut accounts = vec![
+        acut::BankAccountRust {
+            name: "User1".to_string(),
+            account_id: 1,
+            balance: Default::default(),
+            password: "123456".to_string(), // plaintext
+            is_admin: false,
+            email: "a@mail.com".to_string(),
+            phone: 0,
+        },
+        user2,
+    ];
+
+    let changed = migrate_passwords(&mut accounts);
+
+    assert!(changed);
+    assert!(is_bcrypt_hash(&accounts[0].password));
+    assert!(verify_password("123456", &accounts[0].password));
+}
 }
