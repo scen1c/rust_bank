@@ -2,7 +2,7 @@ use std::io::{self, Write};
 use bcrypt::{hash, verify, DEFAULT_COST};
 use crate::accountinfo as acut;
 use crate::saveload as sl;
-
+use rpassword::read_password;
 pub fn hash_password(plain: &str) -> String {
     hash(plain, DEFAULT_COST).expect("Failed to hash password")
 }
@@ -34,10 +34,9 @@ pub fn migrate_passwords(accounts: &mut Vec<acut::BankAccountRust>) -> bool {
 }
 
 pub fn change_password(account: &mut acut::BankAccountRust) {
-    let mut prev_password = String::new();
     print!("Write ur password!: ");
     io::stdout().flush().unwrap();
-    io::stdin().read_line(&mut prev_password).unwrap();
+    let prev_password = read_password().unwrap();
     let prev_password = prev_password.trim();
     if verify_password(&prev_password, &account.password) {
         let mut new_password = String::new();
